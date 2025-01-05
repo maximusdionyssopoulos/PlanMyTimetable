@@ -35,7 +35,7 @@ All operations occur on-device with no data ever sent to a server.
 
 ### Issues and Changes
 
-If you want to report a problem, or suggest an improvement or change, [please create an issue on Github.](https://github.com/s3943811/PlanMyTimetable/issues/new/choose), and describe the problem or request.
+If you want to report a problem, or suggest an improvement or change, [please create an issue on Github.](https://github.com/maximusdionyssopoulos/PlanMyTimetable/issues/new/choose), and describe the problem or request.
 
 ### How to use
 

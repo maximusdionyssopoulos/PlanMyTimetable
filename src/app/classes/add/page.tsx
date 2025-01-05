@@ -31,7 +31,7 @@ export default function Page() {
         available for automatic data gathering, either install a browser
         extension or create a bookmark (
         <a
-          href="https://github.com/s3943811/PlanMyTimetable#university-support"
+          href="https://github.com/maximusdionyssopoulos/PlanMyTimetable#university-support"
           className="font-medium underline underline-offset-4 after:content-['_↗']"
         >
           view supported universities here

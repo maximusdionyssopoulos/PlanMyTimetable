@@ -37,7 +37,7 @@ function Navbar() {
           <BMCLogo /> <span className="hidden sm:inline"> Donate</span>
         </a>
         <div className="hidden w-[6.2rem] space-y-1 border-t border-t-neutral-50 pt-2 dark:border-t-neutral-700 md:block">
-          <p className="whitespace-break-spaces break-words text-xs font-medium">
+          <p className="whitespace-break-spaces text-xs font-medium">
             PlanMyTimetable
           </p>
           <p className=" whitespace-break-spaces break-all text-xs font-light">

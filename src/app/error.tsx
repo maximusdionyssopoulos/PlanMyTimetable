@@ -24,7 +24,7 @@ export default function Error({
         <p>
           Please report this issue,{" "}
           <a
-            href="https://github.com/s3943811/timetable/issues/new"
+            href="https://github.com/maximusdionyssopoulos/PlanMyTimetable/issues/new/choose"
             className="font-medium underline underline-offset-4 after:content-['_↗']"
           >
             by creating an issue on Github

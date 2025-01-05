@@ -23,7 +23,7 @@ export default function Page() {
           If you want to report a problem, or suggest an improvement or
           change,&nbsp;
           <a
-            href="https://github.com/s3943811/timetable/issues/new"
+            href="https://github.com/maximusdionyssopoulos/PlanMyTimetable/issues/new/choose"
             className="font-medium underline underline-offset-4 after:content-['_↗']"
           >
             please create an issue on Github
