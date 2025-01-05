@@ -44,7 +44,7 @@ function Navbar() {
             Built by Maximus Dionyssopoulos.
           </p>
           <a
-            href="https://github.com/s3943811"
+            href="https://github.com/maximusdionyssopoulos"
             className="font-medium underline underline-offset-4 after:content-['_↗'] hover:font-semibold"
           >
             Github
