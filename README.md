@@ -66,4 +66,4 @@ Blocked/fixed times are useful when planning around a fixed event in your calend
 
 ## Credits
 
-- Tom Anderson ([andogq](https://github.com/andogq)) - Modified the bookmark code available [here](https://github.com/andogq/timetable), to select semester, use nanoid and JSONCrush, and redirect to this site.
+- Tom Anderson ([andogq](https://github.com/andogq)) - Modified the bookmark code available [here](https://github.com/andogq/timetable), to select semester, use nanoid and JSONCrush, and redirect to this site. In addition, modified the timetable generator code to be compatible with the types used within this app.

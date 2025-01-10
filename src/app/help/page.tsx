@@ -130,7 +130,8 @@ export default function Page() {
             here
           </a>
           , to select semester, use nanoid and JSONCrush, and redirect to this
-          site.
+          site. In addition, modified the timetable generator code to be
+          compatible with the types used within this app.
         </p>
       </section>
     </article>
