@@ -13,6 +13,7 @@ import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import type { Course, Preference, Time } from "~/lib/definitions";
 import { useUrlState } from "~/hooks/useUrlState";
 import { createContext, useContext, useState } from "react";
+import { convertCourseToPreference } from "~/lib/functions";
 
 interface DnDContext {
   dragType: DragType | null;
@@ -52,40 +53,7 @@ export function DndProvider({ children }: { children: React.ReactNode }) {
     if (over && over.data.current?.accepts === active.data.current?.course) {
       const activeCourse = active.data.current?.course as Course;
       const activeTime = over.data.current?.time as Time;
-      /**
-       * If a time is grouped, i.e a single preference but multiple events in the calendar
-       * then we need to do the following:
-       * find all the matching groupped times from the course
-       * set the preference to grouped and create all the preferences that are grouped
-       */
-      let preference: Preference | Array<Preference>;
-      if (activeTime.grouped) {
-        const firstTwoDigits = activeTime.grouped_code.slice(0, 2);
-        const pattern = new RegExp(`^${firstTwoDigits}-P[1-9]$`);
-
-        preference = activeCourse.options
-          .filter((time) => time.grouped && pattern.test(time.grouped_code))
-          .map((option) => ({
-            id: activeCourse.id,
-            title: activeCourse.title,
-            courseCode: activeCourse.courseCode,
-            type: activeCourse.type,
-            colour: activeCourse.colour,
-            grouped: true,
-            grouped_code: option.grouped ? option.grouped_code : "",
-            time: option,
-          }));
-      } else {
-        preference = {
-          id: activeCourse.id,
-          title: activeCourse.title,
-          courseCode: activeCourse.courseCode,
-          type: activeCourse.type,
-          colour: activeCourse.colour,
-          grouped: false,
-          time: activeTime,
-        };
-      }
+      const preference = convertCourseToPreference(activeCourse, activeTime);
       /**
        * Search the events array and determine wherther the element being dragged matches an event
        * This was done so that elements can be dragged within the calendar and not be duplicated but rather moved

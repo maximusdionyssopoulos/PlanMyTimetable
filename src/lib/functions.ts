@@ -1,5 +1,5 @@
 import { ColourPalette, CourseType, Days } from "./definitions";
-import type { Preference, Time } from "./definitions";
+import type { Course, Preference, Time } from "./definitions";
 
 export function compareDays(day1: string, day2: Days) {
   switch (day2) {
@@ -163,4 +163,42 @@ export function groupTimesByStartAndDay(items: Time[] | undefined): Time[][] {
   });
 
   return Object.values(groups);
+}
+
+export function convertCourseToPreference(
+  course: Course,
+  time: Time,
+): Preference | Array<Preference> {
+  /**
+   * If a time is grouped, i.e a single preference but multiple events in the calendar
+   * then we need to do the following:
+   * find all the matching groupped times from the course
+   * set the preference to grouped and create all the preferences that are grouped
+   */
+  if (time.grouped) {
+    const firstTwoDigits = time.grouped_code.slice(0, 2);
+    const pattern = new RegExp(`^${firstTwoDigits}-P[1-9]$`);
+
+    return course.options
+      .filter((time) => time.grouped && pattern.test(time.grouped_code))
+      .map((option) => ({
+        id: course.id,
+        title: course.title,
+        courseCode: course.courseCode,
+        type: course.type,
+        colour: course.colour,
+        grouped: true,
+        grouped_code: option.grouped ? option.grouped_code : "",
+        time: option,
+      }));
+  }
+  return {
+    id: course.id,
+    title: course.title,
+    courseCode: course.courseCode,
+    type: course.type,
+    colour: course.colour,
+    grouped: false,
+    time: time,
+  };
 }
