@@ -202,3 +202,16 @@ export function convertCourseToPreference(
     time: time,
   };
 }
+export function getAllCampusDescriptions(courses: Course[]): string[] {
+  const campusSet = new Set<string>();
+
+  for (const course of courses) {
+    for (const option of course.options) {
+      if (option.campus_description) {
+        campusSet.add(option.campus_description);
+      }
+    }
+  }
+
+  return Array.from(campusSet);
+}

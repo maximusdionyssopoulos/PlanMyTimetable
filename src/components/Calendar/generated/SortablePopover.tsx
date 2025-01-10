@@ -35,6 +35,7 @@ import { generate } from "./generate";
 import type { PENALTIES } from "./generate";
 import type { Preference } from "~/lib/definitions";
 import { usePreview } from "~/contexts/PreviewContext";
+import { getAllCampusDescriptions } from "~/lib/functions";
 
 function SortableItem({ id, index }: { id: string; index: number }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -65,6 +66,7 @@ export function SortablePopover({
 }: {
   setGeneratedPreferences: Dispatch<SetStateAction<Preference[][]>>;
 }) {
+  const { courseData } = usePreview();
   const [open, setOpen] = useState(false);
 
   const [items, setItems] = useState<Array<keyof typeof PENALTIES>>([
@@ -72,6 +74,9 @@ export function SortablePopover({
     "days",
     "campus",
   ]);
+  const [preferredCampus, setPreferredCampus] = useState<string>(
+    getAllCampusDescriptions(courseData)[0] ?? "",
+  );
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -94,14 +99,12 @@ export function SortablePopover({
     }
   };
 
-  const { courseData } = usePreview();
-
   const generatePreferences = () => {
     setGeneratedPreferences(
       generate(courseData, {
         amount: 10,
         rankings: items,
-        campus: "Melbourne City",
+        campus: preferredCampus,
       }),
     );
   };
@@ -131,6 +134,22 @@ export function SortablePopover({
               into consideration, blocked times or friends.
             </DialogDescription>
           </div>
+          <div className="inline-flex gap-1">
+            <label htmlFor="preferredCampus">Preferred Campus:</label>
+            <select
+              className="w-full rounded-md border p-2 dark:border-neutral-600 dark:bg-neutral-700"
+              value={preferredCampus}
+              onChange={(e) => setPreferredCampus(e.target.value)}
+              id="preferredCampus"
+            >
+              {getAllCampusDescriptions(courseData).map((campus) => (
+                <option key={campus} value={campus}>
+                  {campus}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <DndContext
             sensors={sensors}
             onDragEnd={handleDragEnd}
