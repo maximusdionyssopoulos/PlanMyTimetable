@@ -175,6 +175,11 @@ export function convertCourseToPreference(
    * find all the matching groupped times from the course
    * set the preference to grouped and create all the preferences that are grouped
    */
+
+  function parseDuration(duration: string | number): number {
+    return typeof duration === "string" ? parseInt(duration, 10) : duration;
+  }
+
   if (time.grouped) {
     const firstTwoDigits = time.grouped_code.slice(0, 2);
     const pattern = new RegExp(`^${firstTwoDigits}-P[1-9]$`);
@@ -189,7 +194,10 @@ export function convertCourseToPreference(
         colour: course.colour,
         grouped: true,
         grouped_code: option.grouped ? option.grouped_code : "",
-        time: option,
+        time: {
+          ...option,
+          duration: parseDuration(option.duration),
+        },
       }));
   }
   return {
@@ -199,7 +207,10 @@ export function convertCourseToPreference(
     type: course.type,
     colour: course.colour,
     grouped: false,
-    time: time,
+    time: {
+      ...time,
+      duration: parseDuration(time.duration),
+    },
   };
 }
 export function getAllCampusDescriptions(courses: Course[]): string[] {
