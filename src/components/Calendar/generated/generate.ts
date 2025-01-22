@@ -168,7 +168,7 @@ export function generate(
         const start = timeToMinutes(pref.time.start);
         const end = start + pref.time.duration;
 
-        const intervals = tempDayMap.get(day) || [];
+        const intervals = tempDayMap.get(day) ?? [];
         let low = 0,
           high = intervals.length;
         while (low < high) {

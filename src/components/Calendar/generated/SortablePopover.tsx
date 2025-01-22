@@ -31,35 +31,11 @@ import {
 import type { DragEndEvent } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { HiOutlineX } from "react-icons/hi";
-import { generate } from "./generate";
-import type { GenerateEvent, PENALTIES } from "./generate";
+import type { PENALTIES } from "./generate";
 import type { Preference } from "~/lib/definitions";
 import { usePreview } from "~/contexts/PreviewContext";
 import { getAllCampusDescriptions } from "~/lib/functions";
-
-function SortableItem({ id, index }: { id: string; index: number }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-  return (
-    <div className="inline-flex items-center gap-2">
-      <p>{index}: </p>
-      <div
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
-        className="inline-flex w-full items-center justify-between rounded-md p-1 "
-      >
-        {id}
-        <RxDragHandleDots2 />
-      </div>
-    </div>
-  );
-}
+import { ImSpinner8 } from "react-icons/im";
 
 export function SortablePopover({
   setGeneratedPreferences,
@@ -69,6 +45,7 @@ export function SortablePopover({
   const { courseData } = usePreview();
   const [open, setOpen] = useState(false);
   const workerRef = useRef<Worker>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [items, setItems] = useState<Array<keyof typeof PENALTIES>>([
     "breaks",
@@ -89,13 +66,15 @@ export function SortablePopover({
     workerRef.current = new Worker(
       new URL("./generate.worker.ts", import.meta.url),
     );
-    workerRef.current.onmessage = (event: MessageEvent<Preference[][]>) =>
+    workerRef.current.onmessage = (event: MessageEvent<Preference[][]>) => {
       // console.log(event.data);
       setGeneratedPreferences(event.data);
+      setIsLoading(false);
+    };
     return () => {
       workerRef.current?.terminate();
     };
-  }, []);
+  }, [setGeneratedPreferences]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -113,6 +92,7 @@ export function SortablePopover({
   };
 
   const generatePreferences = () => {
+    setIsLoading(true);
     const options = {
       amount: 10,
       rankings: items,
@@ -125,8 +105,12 @@ export function SortablePopover({
   return (
     <Dialog modal open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outlineIcon">
-          <HiMiniSparkles />
+        <Button variant="outlineIcon" disabled={isLoading}>
+          {isLoading ? (
+            <ImSpinner8 className="animate-spin" />
+          ) : (
+            <HiMiniSparkles />
+          )}
         </Button>
       </DialogTrigger>
       <DialogPortal>
@@ -190,5 +174,29 @@ export function SortablePopover({
         </DialogContent>
       </DialogPortal>
     </Dialog>
+  );
+}
+
+function SortableItem({ id, index }: { id: string; index: number }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+  return (
+    <div className="inline-flex items-center gap-2">
+      <p>{index}: </p>
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className="inline-flex w-full items-center justify-between rounded-md p-1 "
+      >
+        {id}
+        <RxDragHandleDots2 />
+      </div>
+    </div>
   );
 }
