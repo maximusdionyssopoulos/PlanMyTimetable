@@ -5,7 +5,7 @@ import {
   sortableKeyboardCoordinates,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import Button from "../../Button/Button";
 import { HiMiniSparkles } from "react-icons/hi2";
@@ -32,7 +32,7 @@ import type { DragEndEvent } from "@dnd-kit/core";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { HiOutlineX } from "react-icons/hi";
 import { generate } from "./generate";
-import type { PENALTIES } from "./generate";
+import type { GenerateEvent, PENALTIES } from "./generate";
 import type { Preference } from "~/lib/definitions";
 import { usePreview } from "~/contexts/PreviewContext";
 import { getAllCampusDescriptions } from "~/lib/functions";
@@ -68,6 +68,7 @@ export function SortablePopover({
 }) {
   const { courseData } = usePreview();
   const [open, setOpen] = useState(false);
+  const workerRef = useRef<Worker>();
 
   const [items, setItems] = useState<Array<keyof typeof PENALTIES>>([
     "breaks",
@@ -83,6 +84,18 @@ export function SortablePopover({
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
+
+  useEffect(() => {
+    workerRef.current = new Worker(
+      new URL("./generate.worker.ts", import.meta.url),
+    );
+    workerRef.current.onmessage = (event: MessageEvent<Preference[][]>) =>
+      // console.log(event.data);
+      setGeneratedPreferences(event.data);
+    return () => {
+      workerRef.current?.terminate();
+    };
+  }, []);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -100,13 +113,13 @@ export function SortablePopover({
   };
 
   const generatePreferences = () => {
-    setGeneratedPreferences(
-      generate(courseData, {
-        amount: 10,
-        rankings: items,
-        campus: preferredCampus,
-      }),
-    );
+    const options = {
+      amount: 10,
+      rankings: items,
+      campus: preferredCampus,
+    };
+    // setGeneratedPreferences(generate(courseData, options));
+    workerRef.current?.postMessage({ courses: courseData, options });
   };
 
   return (
