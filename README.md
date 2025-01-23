@@ -10,6 +10,7 @@ Please feel free to open an issue for issues or feature request.
 - Friend Timetable comparison
 - Blocked/fixed times (for example, if you know that you always have work at 12:30 PM on Tuesdays, you may want to block out that time when creating your timetable)
 - Browser Extension for easily capturing data from Allocate+.
+- Algorithmically find the best timetable ranked according to your preference's of days, breaks, campus.
 - Dark mode
 
 ## Browser Extensions
@@ -23,7 +24,8 @@ Unfortunately, a Safari browser extension is not available due to Apple's pricin
 Currently, the browser extension is only confirmed to work at:
 
 - RMIT University
-- Melbourne University.
+- Melbourne University
+- Queensland University of Technology
 
 I am currently working on adding support for Monash University. If your university uses Allocate+, please open an issue to request support.
 
