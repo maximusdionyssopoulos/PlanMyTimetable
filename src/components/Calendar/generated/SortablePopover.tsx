@@ -36,16 +36,20 @@ import type { Preference } from "~/lib/definitions";
 import { usePreview } from "~/contexts/PreviewContext";
 import { getAllCampusDescriptions } from "~/lib/functions";
 import { ImSpinner8 } from "react-icons/im";
+import { useUrlState } from "~/hooks/useUrlState";
 
 export function SortablePopover({
   setGeneratedPreferences,
+  setIndex,
 }: {
   setGeneratedPreferences: Dispatch<SetStateAction<Preference[][]>>;
+  setIndex: Dispatch<SetStateAction<number>>;
 }) {
-  const { courseData } = usePreview();
+  const { courseData, events, setEvents } = usePreview();
   const [open, setOpen] = useState(false);
   const workerRef = useRef<Worker>();
   const [isLoading, setIsLoading] = useState(false);
+  const { replaceState, appendState } = useUrlState();
 
   const [items, setItems] = useState<Array<keyof typeof PENALTIES>>([
     "breaks",
@@ -69,12 +73,29 @@ export function SortablePopover({
     workerRef.current.onmessage = (event: MessageEvent<Preference[][]>) => {
       // console.log(event.data);
       setGeneratedPreferences(event.data);
+      const newPreferences = event.data[0];
+      if (newPreferences) {
+        if (events.length === 0) {
+          appendState(newPreferences, "pref");
+        } else {
+          replaceState(newPreferences, "pref");
+        }
+        setEvents(newPreferences);
+        setIndex(0);
+      }
       setIsLoading(false);
     };
     return () => {
       workerRef.current?.terminate();
     };
-  }, [setGeneratedPreferences]);
+  }, [
+    setGeneratedPreferences,
+    appendState,
+    events.length,
+    replaceState,
+    setEvents,
+    setIndex,
+  ]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
