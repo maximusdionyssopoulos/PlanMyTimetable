@@ -57,7 +57,7 @@ export default function RootLayout({
       </body>
       <Script
         async
-        src="https://plan-my-timetable-analytics.vercel.app/script.js"
+        src="https://analytics.maxdionyss.dev/script.js"
         data-website-id="b3182ddb-8ac5-40ae-9612-1e16c24b5d16"
       />
     </html>
